@@ -410,7 +410,8 @@ window.storeInputValue = async function storeInputValue(
       // Calculate average points for tied competitors
       const pointsArray = pointsDistribution[`${game}-${round}-speed`];
       const totalPoints = tieCompetitors.reduce((sum, _, index) => {
-        return sum + (pointsArray[speedRank + index] || 1);
+        const points = Number(pointsArray[speedRank + index]);
+        return sum + (Number.isFinite(points) ? points : 0);
       }, 0);
       const averagePoints = totalPoints / tieCompetitors.length;
 
@@ -469,8 +470,13 @@ window.storeInputValue = async function storeInputValue(
 
       // Calculate average points for tied competitors
       const pointsArray = pointsDistribution[`${game}-${round}-presentation`];
+      if (!pointsArray) {
+        presentationRank += tieCompetitors.length;
+        continue;
+      }
       const totalPoints = tieCompetitors.reduce((sum, _, index) => {
-        return sum + (pointsArray[presentationRank + index] || 1);
+        const points = Number(pointsArray[presentationRank + index]);
+        return sum + (Number.isFinite(points) ? points : 0);
       }, 0);
       const averagePoints = totalPoints / tieCompetitors.length;
 
@@ -534,7 +540,8 @@ window.storeInputValue = async function storeInputValue(
         const pointsArray = pointsDistribution[`${game}-${round}-variance`];
         const perfectCutPoints = pointsDistribution['perfect-cut-bonus'];
         const totalPoints = tieCompetitors.reduce((sum, _, index) => {
-          return sum + (pointsArray[varianceRank + index] || 1);
+          const points = Number(pointsArray[varianceRank + index]);
+          return sum + (Number.isFinite(points) ? points : 0);
         }, 0);
         const averagePoints = totalPoints / tieCompetitors.length;
 

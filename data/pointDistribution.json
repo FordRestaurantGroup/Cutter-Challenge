@@ -1,14 +1,18 @@
 {
   "perfect-cut-bonus": 2,
-  "game1-round1-speed": [8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0],
-  "game1-round1-variance": [8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0],
-  "game1-round1-presentation": [8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0],
-  "game1-round2-speed": [8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0],
-  "game1-round2-variance": [8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0],
-  "game1-round3-speed": [8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0],
+  "game1-round1-speed": [6, 4, 3, 2, 2, 1, 1, 0, 0, 0, 0, 0],
+  "game1-round1-variance": [8, 6, 5, 4, 3, 2, 1, 1, 0, 0, 0, 0],
+  "game1-round1-presentation": [8, 6, 5, 4, 3, 2, 1, 1, 0, 0, 0, 0],
+  
+  "game1-round2-speed": [7, 5, 3, 2, 2, 1, 0, 0, 0, 0, 0, 0],
+  "game1-round2-variance": [10, 7, 5, 4, 3, 1, 0, 0, 0, 0, 0, 0],
+ 
+  "game1-round3-speed": [10, 6, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   "game1-round3-variance": [8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0],
-  "game2-round1-speed": [56, 46, 37, 38, 14, 5],
-  "game2-round1-presentation": [56, 46, 37, 38, 14, 5],
-  "game3-round1-speed": [93.5, 56, 37.5],
-  "game3-round1-presentation": [93.5, 56, 37.5]
+  
+  "game2-round1-speed": [7,5,3,2,2,1],
+  "game2-round1-presentation": [10,7,5,4,3,1],
+  
+  "game3-round1-speed": [10,6,4],
+  "game3-round1-presentation": [15,9,6]
 }

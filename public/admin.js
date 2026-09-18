@@ -33,6 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
   document
+    .getElementById('goToSimulatorButton')
+    .addEventListener('click', () => {
+      changePage('simulator');
+    });
+
+  document
     .getElementById('goToCompetitorsLeaderboards')
     .addEventListener('click', () => {
       changePage('leaderboards#selected');

@@ -35,6 +35,10 @@ server.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
+server.get('/simulator', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'simulator.html'));
+});
+
 server.post('/changeComPort', (req, res) => {
   // Change com port on universe
   const comPort = req.body.comPort;

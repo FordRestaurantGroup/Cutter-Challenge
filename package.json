@@ -18,10 +18,12 @@
   },
   "devDependencies": {
     "electron": "^31.0.0",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "playwright": "^1.54.1"
   },
   "scripts": {
     "start": "electron .",
+    "regenerate-report": "node scripts/regenerate-report.js",
     "package": "electron-packager . \"Rudy's Cutter Challenge\" --platform=win32 --arch=x64 --out=dist/ --overwrite",
     "dist": "electron-builder"
   },
