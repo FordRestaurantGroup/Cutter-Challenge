@@ -11,6 +11,7 @@
     "@electron/rebuild": "^3.7.1",
     "@serialport/bindings": "^9.2.9",
     "dmx": "^0.2.5",
+    "dotenv": "^17.2.2",
     "electron-log": "^5.2.4",
     "electron-updater": "^6.3.9",
     "express": "^4.21.2",
@@ -23,6 +24,7 @@
   },
   "scripts": {
     "start": "electron .",
+    "test:leaderboard": "node test-leaderboard-model.mjs",
     "regenerate-report": "node scripts/regenerate-report.js",
     "package": "electron-packager . \"Rudy's Cutter Challenge\" --platform=win32 --arch=x64 --out=dist/ --overwrite",
     "dist": "electron-builder"

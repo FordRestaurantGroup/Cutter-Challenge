@@ -86,6 +86,24 @@ button:hover {
   color: white;
 }
 
+#leaderboardPublishStatus {
+  display: block;
+  min-height: 2.4em;
+  margin: 2px 6px 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+#leaderboardPublishStatus[data-state='success'] {
+  color: #d8ffd8;
+}
+
+#leaderboardPublishStatus[data-state='warning'],
+#leaderboardPublishStatus[data-state='error'] {
+  color: #fff0a8;
+}
+
 .editButton {
   margin-left: 15px;
 }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Rudy's Cutter Challenge Leaderboard</title>
+    <link rel="icon" type="image/png" href="/assets/cutterLogo.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="preview-label" aria-hidden="true">Transparency preview</div>
+    <main class="leaderboard" aria-live="polite" aria-busy="true">
+      <header class="leaderboard__header">
+        <div class="brand-tile">
+          <img src="/assets/cutterLogo.png" alt="Rudy's Cutter Challenge" />
+        </div>
+        <div class="leaderboard__heading">
+          <p class="eyebrow">Live leaderboard</p>
+          <h1 id="leaderboard-title">Current Standings</h1>
+        </div>
+      </header>
+
+      <div id="leaderboard-content" class="leaderboard__content">
+        <p class="empty-state">Waiting for published scores…</p>
+      </div>
+
+      <footer class="leaderboard__footer">
+        <span>Rudy's Cutter Challenge</span>
+        <time id="published-time"></time>
+      </footer>
+    </main>
+    <script type="module" src="/overlay.js"></script>
+  </body>
+</html>

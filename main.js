@@ -12,8 +12,8 @@ const server = require('./server');
 const fs = require('fs');
 const path = require('path');
 
-let mainWindow;
-let secondWindow;
+let tvWindow;
+let adminWindow;
 
 // Configure logging
 autoUpdater.logger = log;
@@ -44,8 +44,9 @@ app.on('ready', () => {
     window.setMenuBarVisibility(false);
   };
 
-  // Create the first window on the primary display
-  const mainWindowOptions = {
+  // Create the audience window that is shown on the connected TV.
+  const tvWindowOptions = {
+    title: 'TV Display',
     width: 800,
     height: 600,
     frame: true,
@@ -57,28 +58,27 @@ app.on('ready', () => {
   };
 
   if (displays.length > 1) {
-    mainWindowOptions.x = displays[1].bounds.x;
-    mainWindowOptions.y = displays[1].bounds.y;
+    tvWindowOptions.x = displays[1].bounds.x;
+    tvWindowOptions.y = displays[1].bounds.y;
   } else {
-    mainWindowOptions.x = displays[0].bounds.x + 50;
-    mainWindowOptions.y = displays[0].bounds.y + 50;
+    tvWindowOptions.x = displays[0].bounds.x + 50;
+    tvWindowOptions.y = displays[0].bounds.y + 50;
   }
 
-  mainWindow = new BrowserWindow(mainWindowOptions);
+  tvWindow = new BrowserWindow(tvWindowOptions);
 
-  // Load the Express app in the first window
-  mainWindow.loadURL('http://localhost:3000');
+  tvWindow.loadURL('http://localhost:3000');
 
-  // Attach fullscreen event handlers to the first window
-  handleFullScreenEvents(mainWindow);
+  handleFullScreenEvents(tvWindow);
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
+  tvWindow.on('closed', () => {
+    tvWindow = null;
     app.quit();
   });
 
-  // Create the second window
-  const secondWindowOptions = {
+  // Create the operator controls on the laptop display.
+  const adminWindowOptions = {
+    title: 'Scoring Control',
     width: 800,
     height: 600,
     frame: true,
@@ -89,40 +89,40 @@ app.on('ready', () => {
     },
   };
 
-  secondWindowOptions.x = displays[0].bounds.x;
-  secondWindowOptions.y = displays[0].bounds.y;
+  adminWindowOptions.x = displays[0].bounds.x;
+  adminWindowOptions.y = displays[0].bounds.y;
 
-  secondWindow = new BrowserWindow(secondWindowOptions);
+  adminWindow = new BrowserWindow(adminWindowOptions);
 
-  // Load the Express app in the second window
-  secondWindow.loadURL('http://localhost:3000/admin');
+  adminWindow.loadURL('http://localhost:3000/admin');
 
-  // Attach fullscreen event handlers to the second window
-  handleFullScreenEvents(secondWindow);
+  handleFullScreenEvents(adminWindow);
 
-  secondWindow.on('closed', () => {
-    secondWindow = null;
+  adminWindow.on('closed', () => {
+    adminWindow = null;
     app.quit();
   });
 
   // Register a global shortcut for F11 to toggle fullscreen mode for both windows
   globalShortcut.register('F11', () => {
-    const isFullScreen = mainWindow.isFullScreen();
-    mainWindow.setFullScreen(!isFullScreen);
-    if (secondWindow) {
-      secondWindow.setFullScreen(!isFullScreen);
+    const isFullScreen = tvWindow.isFullScreen();
+    tvWindow.setFullScreen(!isFullScreen);
+    if (adminWindow) {
+      adminWindow.setFullScreen(!isFullScreen);
     }
   });
 
   // Listen for the close-windows event from the renderer process
   ipcMain.on('close-windows', () => {
-    if (mainWindow) mainWindow.close();
-    if (secondWindow) mainWindow.close();
+    if (tvWindow) tvWindow.close();
+    if (adminWindow) adminWindow.close();
   });
 
   // Listen for the change-page event from the renderer process
   ipcMain.on('change-page', (event, page) => {
-    mainWindow.loadURL(`http://localhost:3000/${page}`);
+    if (tvWindow) {
+      tvWindow.loadURL(`http://localhost:3000/${page}`);
+    }
   });
 
   // Listen for the get-com-ports event from the renderer process
@@ -155,7 +155,7 @@ app.on('ready', () => {
   autoUpdater.on('update-available', (info) => {
     log.info('Update available:', info);
     // Show a notification about the update being available
-    dialog.showMessageBox(mainWindow, {
+    dialog.showMessageBox(adminWindow, {
       type: 'info',
       title: 'Update Available',
       message: 'A new version is available. Downloading now...',
@@ -179,7 +179,7 @@ app.on('ready', () => {
     log.info('Update downloaded:', info);
     // Show dialog asking user to install the update
     dialog
-      .showMessageBox(mainWindow, {
+      .showMessageBox(adminWindow, {
         type: 'info',
         title: 'Update Available',
         message: 'A new version is ready to install. Do you want to restart?',
@@ -197,7 +197,7 @@ app.on('ready', () => {
   autoUpdater.on('update-available', (info) => {
     if (info.version && info.version !== app.getVersion()) {
       log.info('Update available:', info);
-      dialog.showMessageBox(mainWindow, {
+      dialog.showMessageBox(adminWindow, {
         type: 'info',
         title: 'Update Available',
         message: `A new version (${info.version}) is available. Downloading now...`,

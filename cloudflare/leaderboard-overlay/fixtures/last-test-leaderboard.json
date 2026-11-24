@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "title": "Final Standings",
+  "publishedAt": "2026-09-18T17:00:00.000Z",
+  "latestGame": "game3",
+  "columns": [
+    { "key": "game1", "label": "Round 1" },
+    { "key": "game2", "label": "After Game 2" },
+    { "key": "game3", "label": "Final" }
+  ],
+  "rows": [
+    { "rank": 1, "name": "Rudy's 1", "location": "Rudy's 1", "eliminated": false, "scores": { "game1": 63, "game2": 80, "game3": 105 } },
+    { "rank": 2, "name": "Rudy's 2", "location": "Rudy's 2", "eliminated": false, "scores": { "game1": 41, "game2": 53, "game3": 68 } },
+    { "rank": 3, "name": "Rudy's 3", "location": "Rudy's 3", "eliminated": false, "scores": { "game1": 31, "game2": 39, "game3": 49 } },
+    { "rank": 4, "name": "Rudy's 4", "location": "Rudy's 4", "eliminated": true, "scores": { "game1": 21, "game2": 27, "game3": 27 } },
+    { "rank": 5, "name": "Rudy's 5", "location": "Rudy's 5", "eliminated": true, "scores": { "game1": 17, "game2": 22, "game3": 22 } },
+    { "rank": 6, "name": "Rudy's 6", "location": "Rudy's 6", "eliminated": true, "scores": { "game1": 10, "game2": 12, "game3": 12 } }
+  ]
+}

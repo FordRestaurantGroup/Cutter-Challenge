@@ -3,6 +3,14 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const DMX = require('dmx');
+const dotenv = require('dotenv');
+
+for (const envFile of ['.env', '.env-cloudflare']) {
+  const envPath = path.join(process.cwd(), envFile);
+  if (fs.existsSync(envPath)) {
+    dotenv.config({ path: envPath, override: false, quiet: true });
+  }
+}
 
 const server = express();
 
@@ -12,7 +20,7 @@ let universe;
 
 // Serve static files from the current directory
 server.use(express.static(path.join(__dirname, 'public')));
-server.use(express.json());
+server.use(express.json({ limit: '256kb' }));
 
 // Serve the bbq.html file when the root route is accessed
 server.get('/', (req, res) => {
@@ -217,6 +225,51 @@ server.post('/save-scores', (req, res) => {
     res
       .status(500)
       .json({ message: 'Internal Server Error', error: error.message });
+  }
+});
+
+server.post('/publish-leaderboard', async (req, res) => {
+  const publishUrl = process.env.LEADERBOARD_PUBLISH_URL;
+  const publishSecret = process.env.LEADERBOARD_PUBLISH_SECRET;
+
+  if (!publishUrl || !publishSecret) {
+    return res.status(503).json({
+      message:
+        'Cloud publishing is not configured. Add LEADERBOARD_PUBLISH_URL and LEADERBOARD_PUBLISH_SECRET to .env-cloudflare.',
+    });
+  }
+
+  const snapshot = req.body;
+  if (
+    !snapshot ||
+    snapshot.version !== 1 ||
+    !Array.isArray(snapshot.columns) ||
+    !Array.isArray(snapshot.rows)
+  ) {
+    return res.status(400).json({ message: 'Invalid leaderboard snapshot.' });
+  }
+
+  try {
+    const publishResponse = await fetch(publishUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${publishSecret}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(snapshot),
+      signal: AbortSignal.timeout(10000),
+    });
+
+    if (!publishResponse.ok) {
+      return res.status(502).json({
+        message: `Cloudflare publish returned ${publishResponse.status}.`,
+      });
+    }
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.error('Error publishing leaderboard:', error.message);
+    return res.status(502).json({ message: 'Unable to reach Cloudflare.' });
   }
 });
 

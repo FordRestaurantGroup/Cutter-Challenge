@@ -1,8 +1,17 @@
+import {
+  buildLeaderboardEntries,
+  getLatestScoredGame,
+  sortEntriesForCurrentStandings,
+} from './leaderboardModel.mjs';
+
 let eventData = {};
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Get input values from local storage
-  const inputValues = JSON.parse(localStorage.getItem('inputValuesChanged'));
+  const inputValues = JSON.parse(
+    localStorage.getItem('inputValuesChanged') || '{}'
+  );
+  eventData = inputValues;
   // Get the hash value
   const leaderboardsFilter = window.location.hash.substring(1);
   updateLeaderboards(inputValues, leaderboardsFilter);
@@ -28,64 +37,19 @@ async function updateLeaderboards(data, leaderboardsFilter) {
   const leaderboards = document.getElementById('leaderboards');
   leaderboards.innerHTML = '';
 
-  const leaderboardEntries = [];
-  const currentCompetitorsData = [];
-
-  for (const person in data) {
-    let currentCompetitorMatch = false;
-
-    // get currentCompetitors from local storage
-    const currentCompetitors = JSON.parse(
-      localStorage.getItem('currentCompetitors')
-    );
-    for (const selectedPerson in currentCompetitors) {
-      if (currentCompetitors[selectedPerson].name === person) {
-        currentCompetitorMatch = true;
-      }
-    }
-    const personData = data[person];
-    const games = {};
-    let eliminated = false;
-
-    for (const key in personData) {
-      if (key === 'eliminated') {
-        eliminated = personData[key];
-      }
-      // If current competitor, add to currentCompetitorsData
-      if (currentCompetitorMatch) {
-        currentCompetitorsData[person] = {
-          ...personData,
-        };
-      }
-      if (key.endsWith('points')) {
-        // Extract the game identifier
-        const game = key.split('-')[0];
-        if (!games[game]) {
-          games[game] = 0;
-        }
-        games[game] += Number(personData[key]);
-      }
-    }
-
-    // Accumulate points from previous games
-    let totalPoints = 0;
-    for (const game of ['game1', 'game2', 'game3']) {
-      if (games[game]) {
-        totalPoints += games[game];
-      }
-      // Update the game points to include previous games' points
-      games[game] = totalPoints;
-    }
-
-    const entry = {
-      name: person,
-      location: personData.location,
-      eliminated,
-      ...games,
-    };
-
-    leaderboardEntries.push(entry);
-  }
+  const safeData = data || {};
+  let leaderboardEntries = buildLeaderboardEntries(safeData);
+  const currentCompetitors = JSON.parse(
+    localStorage.getItem('currentCompetitors') || '[]'
+  );
+  const currentCompetitorNames = new Set(
+    currentCompetitors.map((competitor) => competitor.name)
+  );
+  const currentCompetitorsData = Object.fromEntries(
+    Object.entries(safeData).filter(([name]) =>
+      currentCompetitorNames.has(name)
+    )
+  );
 
   if (leaderboardsFilter === 'selected') {
     // Use currentCompetitorsData to build leaderboard
@@ -225,15 +189,11 @@ async function updateLeaderboards(data, leaderboardsFilter) {
 
     createTable(leaderboardEntries, leaderboards, gameFilter);
   } else if (leaderboardsFilter === 'all') {
-    // Sort by each game column
-    leaderboardEntries.sort((a, b) => {
-      for (const game of ['game1', 'game2', 'game3']) {
-        if ((b[game] || 0) !== (a[game] || 0)) {
-          return (b[game] || 0) - (a[game] || 0);
-        }
-      }
-      return 0;
-    });
+    const latestGame = getLatestScoredGame(safeData);
+    leaderboardEntries = sortEntriesForCurrentStandings(
+      leaderboardEntries,
+      latestGame
+    );
     createTable(leaderboardEntries, leaderboards, leaderboardsFilter);
   }
 }

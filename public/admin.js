@@ -1,7 +1,53 @@
 import { playSound, toggleSounds, changeLight } from './av.js';
+import { createLeaderboardSnapshot } from './leaderboardModel.mjs';
 
 function changePage(page) {
   window.electron.changePage(page);
+}
+
+function setPublishStatus(message, state = '') {
+  const status = document.getElementById('leaderboardPublishStatus');
+  status.textContent = message;
+  status.dataset.state = state;
+}
+
+async function publishLeaderboard() {
+  const storedScores = localStorage.getItem('inputValuesChanged');
+  if (!storedScores) {
+    setPublishStatus('TV updated. No scores are available to publish.', 'warning');
+    return;
+  }
+
+  setPublishStatus('Publishing leaderboard…', 'pending');
+
+  try {
+    const snapshot = createLeaderboardSnapshot(JSON.parse(storedScores));
+    if (snapshot.rows.length === 0) {
+      setPublishStatus(
+        'TV updated. No scores are available to publish.',
+        'warning'
+      );
+      return;
+    }
+
+    const response = await fetch('/publish-leaderboard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(snapshot),
+    });
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Publish failed');
+    }
+
+    setPublishStatus('TV updated and leaderboard published.', 'success');
+  } catch (error) {
+    setPublishStatus(
+      `TV updated. Cloud publish failed: ${error.message}`,
+      'error'
+    );
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -30,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .getElementById('goToLeaderboardsButton')
     .addEventListener('click', () => {
       changePage('leaderboards#all');
+      void publishLeaderboard();
     });
 
   document
