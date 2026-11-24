@@ -1,8 +1,10 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "cutter-challenge-leaderboard",
+  "name": "rudys-cutter-leaderboard",
   "main": "src/index.ts",
-  "compatibility_date": "2026-09-18",
+  "compatibility_date": "2026-11-24",
+  "preview_urls": false,
+  "upload_source_maps": true,
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./public",
@@ -12,7 +14,7 @@
   "r2_buckets": [
     {
       "binding": "LEADERBOARD_BUCKET",
-      "bucket_name": "cutter-challenge-leaderboard"
+      "bucket_name": "rudys-cutter-leaderboard"
     }
   ],
   "observability": {

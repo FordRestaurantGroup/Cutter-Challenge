@@ -16,7 +16,7 @@ Publish a fixture with an HTTP `POST` to `/api/leaderboard`, using the same valu
 After a Cloudflare account is available:
 
 1. Authenticate Wrangler (`npx wrangler login` or set the standard Wrangler API-token environment variables).
-2. Create the bucket: `npx wrangler r2 bucket create cutter-challenge-leaderboard`.
+2. Create the bucket: `npx wrangler r2 bucket create rudys-cutter-leaderboard`.
 3. Set the Worker secret interactively: `npx wrangler secret put PUBLISH_SECRET`.
 4. Validate with `npm run check`, then deploy with `npx wrangler deploy`.
 5. Add a custom domain to the deployed Worker if desired.
